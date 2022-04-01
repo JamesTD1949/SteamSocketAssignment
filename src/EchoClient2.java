@@ -15,34 +15,29 @@ public class EchoClient2 {
    private static EchoClientHelper2 clientHelper2;
 
    public static void main(String[] args) {
+      //Instantiate InputStreamReader and BufferedReader
       InputStreamReader is = new InputStreamReader(System.in);
       BufferedReader br = new BufferedReader(is);
       try {
+         // Ask for server host
          System.out.println("Welcome to the Echo client.\n" +
                  "What is the name of the server host?");
          String hostName = br.readLine();
          if (hostName.length() == 0) // if user did not enter a name
             hostName = "localhost";  //   use the default host name
 
+         //ask for server port number
          System.out.println("What is the port number of the server host?");
          String portNum = br.readLine();
          if (portNum.length() == 0)
             portNum = "1234";          // default port number
 
-         System.setProperty("javax.net.ssl.trustStore", "herong.jks");
-         System.setProperty("javax.net.ssl.trustStorePassword","password");
-         System.setProperty("jdk.tls.server.protocols","TLSv1.2");
-         System.setProperty("jdk.tls.client.protocols","TLSv1.2");
-         
-         Socket socket = SSLSocketFactory.getDefault().createSocket(hostName, Integer.parseInt(portNum));
-         BufferedReader socketBufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-         PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
-         BufferedReader commandPropertyBufferReader = new BufferedReader(new InputStreamReader(System.in));
-
+         //create socket via clientHelper
          clientHelper2 = new EchoClientHelper2(hostName, portNum);
          boolean done = false;
          String message;
          while (!done) {
+            //display options
             System.out.println("\nWelcome to the server.\nThe following options are available:\n" +
                     "100 - login. Log in to server. Requires username and password\n" +
                     "200 - upload. Upload message to server. Requires message to be uploaded.\n"+
@@ -50,7 +45,9 @@ public class EchoClient2 {
                     "400 - log out. Log out and close session.");
             message = br.readLine();
             if ((message.equals(endMessage))) {
+               //end loop
                done = true;
+               //close socket
                clientHelper2.done();
             }
             else {
@@ -89,13 +86,5 @@ public class EchoClient2 {
       catch (IOException e) {
          e.printStackTrace();
       }
-   }
-
-   public EchoClient2(GUI gui) throws IOException {
-      String portNum = "1234";
-      //private static EchoClient2 clientHelper2;
-      //Define class level variables to store default host and port number information
-      String hostname = "localhost";
-      clientHelper2 = new EchoClientHelper2(hostname, portNum);
    }
 }

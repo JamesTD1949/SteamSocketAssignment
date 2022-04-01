@@ -10,8 +10,6 @@ import java.io.*;
 class EchoClientHelper2 {
 
    private MyStreamSocket mySocket;
-
-
    EchoClientHelper2(String hostName, String portNum) throws IOException
    {
       InetAddress serverHost = InetAddress.getByName(hostName);
@@ -21,46 +19,42 @@ class EchoClientHelper2 {
       System.out.println("Connection request made");
    } // end constructor
 
-   /*
-   public String getEcho( String message) throws IOException{
-      String echo = "";    
-      mySocket.sendMessage(message);
-	   // now receive the echo
-      echo = mySocket.receiveMessage();
-      return echo;
-   } // end getEcho
-   */
-
+   //method to handle login client functionality
    String login( String message) throws IOException{
       mySocket.sendMessage(message);
       return mySocket.receiveMessage();
    } // end getEcho
 
+   //method to handle download client functionality
    String download( String message) throws IOException{
       String completeDownload;
       mySocket.sendMessage(message);
       // now receive the echo
       completeDownload = mySocket.receiveMessage();
+      //for loop to iterate through messages arraylist and append each message to completeDownload String
       for(int i=0;i<EchoServer3.messages.size();i++)
       {
          completeDownload += mySocket.receiveMessage();
       }
       completeDownload +=  mySocket.receiveMessage();
       return completeDownload;
-   } // end getEcho
+   }
 
+   //method to handle log Out client functionality
    String logOut(String message) throws IOException {
       mySocket.sendMessage(message);
       return mySocket.receiveMessage();
    }
 
+   //method to handle upload client functionality
    String upload(String message) throws IOException{
       mySocket.sendMessage(message);
       return mySocket.receiveMessage();
    }
 
+   //method to handle closing client
    void done() throws IOException{
       mySocket.sendMessage("END");
       mySocket.close();
-   } // end done 
+   }
 } //end class

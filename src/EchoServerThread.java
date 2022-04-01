@@ -23,23 +23,17 @@ class EchoServerThread implements Runnable {
         String code;
         String returnedMessage;
 
-        //populate the users and messages arraylist instantiated above
-        // Do this outside the while loop to avoid duplicating the same users/messages every loop
-        EchoServer3.users.add("JamesDowning");
-        EchoServer3.users.add("User1Password");
-        EchoServer3.users.add("User2Password");
-        //EchoServer3.messages.add("test message 1");
-        //EchoServer3.messages.add("test message 2");
-        //EchoServer3.messages.add("test message 3");
-
         try {
+            //while loop responsible for handling messages received to Server from client
             while (!done) {
                 message = myDataSocket.receiveMessage();
                 System.out.println("message received: " + message);
                 code = message.substring(0, 3);
+                //switch statement to handle decision making
                 switch (code)
                 {
                     case endMessage:
+                        //end loop and shut down server if endmessage supplied
                         done=true;
                         myDataSocket.sendMessage("Shutting down server.");
                         break;
@@ -50,6 +44,7 @@ class EchoServerThread implements Runnable {
                             myDataSocket.sendMessage(returnedMessage);
                             if (returnedMessage.substring(0, 3).equals("101"))
                             {
+                                //use Boolean loggedIn variable to make sure user is logged in before attempting any other operation
                                 loggedIn = true;
                             }
                         }
@@ -77,13 +72,11 @@ class EchoServerThread implements Runnable {
                             myDataSocket.sendMessage("302 - Download Denied. You must be logged in before you can upload a message.");
                         }
                         else {
-                            //String downloaded = download();
                             myDataSocket.sendMessage("301 - Download Complete.");
                             for(int i=0;i<EchoServer3.messages.size();i++)
                             {
                                 myDataSocket.sendMessage(EchoServer3.messages.get(i));
                             }
-                            myDataSocket.sendMessage("All messages displayed.");
                         }
                         break;
                     case "400":
@@ -138,17 +131,5 @@ class EchoServerThread implements Runnable {
         {
             return "201 - Upload Complete. Your message has been uploaded to the server.";
         }
-    }
-
-    private String download()
-    {
-        String messages="";
-
-        for(int i=0; i<EchoServer3.messages.size(); i++)
-        {
-            messages += EchoServer3.messages.get(i) + "\n";
-        }
-        System.out.println("\n\n" + messages + "\n\n");
-        return messages;
     }
 }

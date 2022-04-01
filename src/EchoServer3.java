@@ -15,6 +15,7 @@ import java.net.*;
  */
 
 public class EchoServer3 {
+    //initialize Arraylists to hold users and messages on server
     public static ArrayList<String> users = new ArrayList<>();
     public static ArrayList<String> messages = new ArrayList<>();
 
@@ -27,30 +28,26 @@ public class EchoServer3 {
           serverPort = Integer.parseInt(args[0]);
       }
 
+      //add some sample users to arraylist
+      users.add("JamesDowning");
+      users.add("User1Password");
+      users.add("User2Password");
 
-        System.setProperty("jdk.tls.server.protocols","TLSv1.2");
-        System.setProperty("jdk.tls.client.protocols","TLSv1.2");
-        System.setProperty("javax.net.ssl.trustStore", "herong.jks");
-        System.setProperty("javax.net.ssl.keyStorePassword", "password");
-        ServerSocket serverSocket = ((SSLServerSocketFactory)SSLServerSocketFactory.getDefault()).createServerSocket(4444);
+    //create server socket
+     ServerSocket serverSocket = new ServerSocket(serverPort);
 
       try {
-          // instantiates a stream socket for accepting connections
-          //ServerSocket myConnectionSocket = new ServerSocket(serverPort);
           System.out.println("Echo server ready.");
 
-
-          while (true) {  // forever loop
-              // wait to accept a connection
+          //while loop responsible for accepting connection requests from clients
+          while (true) {
               System.out.println("Waiting for a connection.");
               MyStreamSocket myDataSocket = new MyStreamSocket(serverSocket.accept());
               System.out.println("Connection accepted");
-              // Start a thread to handle this client's session
               Thread SSLThread = new Thread(new EchoServerThread(myDataSocket));
               SSLThread.start();
               System.out.println("New Thread Started.");
-              // and go on to the next client
-          } //end while forever
+          } //end while
       } // end try
       catch (Exception e) {
           e.printStackTrace( );
